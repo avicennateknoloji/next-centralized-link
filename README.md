@@ -18,7 +18,89 @@ pnpm add @avicennatechnology/next-centralized-link
 
 ## 📖 Kullanım
 
-### Temel Kullanım
+### Temel Kullanım (Önerilen)
+
+```typescript
+import { configureLinks, links } from '@avicennatechnology/next-centralized-link';
+
+// Tüm route'ları tek seferde yapılandırın
+configureLinks({
+  home: () => '/',
+  about: () => '/about',
+  contact: () => '/contact',
+  visas: () => '/vizeler',
+  region: (slug) => `/vizeler/bolge/${slug}`,
+});
+
+// Direkt kullanım
+const homeUrl = links.home(); // '/'
+const visasUrl = links.visas(); // '/vizeler'
+const regionUrl = links.region('avrupa'); // '/vizeler/bolge/avrupa'
+```
+
+### JSX ile Kullanım
+
+```tsx
+import { configureLinks, links } from '@avicennatechnology/next-centralized-link';
+
+// Route konfigürasyonu
+configureLinks({
+  home: () => '/',
+  visas: () => '/vizeler',
+  region: (slug) => `/vizeler/bolge/${slug}`,
+  visa: (slug) => `/vize/${slug}`,
+});
+
+function Navigation({ country }) {
+  return (
+    <nav>
+      <a href={links.home()}>Ana Sayfa</a>
+      <a href={links.visas()}>Vizeler</a>
+      <a href={links.region(slugify(country.slug))}>Bölge</a>
+    </nav>
+  );
+}
+```
+
+### Next.js Link Component'i ile Kullanım
+
+```tsx
+import Link from 'next/link';
+import { links } from '@avicennatechnology/next-centralized-link';
+
+function Navigation({ country }) {
+  return (
+    <nav>
+      <Link href={links.home()}>Ana Sayfa</Link>
+      <Link href={links.visas()}>Vizeler</Link>
+      <Link href={links.region(slugify(country.slug))}>Bölge</Link>
+    </nav>
+  );
+}
+```
+
+### Router ile Kullanım
+
+```tsx
+import { useRouter } from 'next/router';
+import { links } from '@avicennatechnology/next-centralized-link';
+
+function MyComponent({ countrySlug }) {
+  const router = useRouter();
+  
+  const handleNavigation = () => {
+    router.push(links.region(countrySlug));
+  };
+  
+  return (
+    <button onClick={handleNavigation}>
+      Bölgeye Git
+    </button>
+  );
+}
+```
+
+### Alternatif Kullanım (Tekli Ekleme)
 
 ```typescript
 import { centralizedLink, getLink } from '@avicennatechnology/next-centralized-link';
@@ -36,58 +118,53 @@ const aboutUrl = getLink('about'); // '/about'
 ### Parametreli Route'lar
 
 ```typescript
-import { centralizedLink, getLink } from '@avicennatechnology/next-centralized-link';
+import { configureLinks, links } from '@avicennatechnology/next-centralized-link';
 
 // Parametreli route tanımları
-centralizedLink('user', ({ id }) => `/user/${id}`);
-centralizedLink('post', ({ slug }) => `/blog/${slug}`);
-centralizedLink('category', ({ category, page = 1 }) => `/category/${category}?page=${page}`);
+configureLinks({
+  home: () => '/',
+  user: ({ id }) => `/user/${id}`,
+  post: ({ slug }) => `/blog/${slug}`,
+  category: ({ category, page = 1 }) => `/category/${category}?page=${page}`,
+  // Slug parametresi (daha basit kullanım)
+  region: (slug) => `/vizeler/bolge/${slug}`,
+  visa: (slug) => `/vize/${slug}`,
+});
 
 // Kullanım
-const userUrl = getLink('user', { id: 123 }); // '/user/123'
-const postUrl = getLink('post', { slug: 'my-post' }); // '/blog/my-post'
-const categoryUrl = getLink('category', { category: 'tech', page: 2 }); // '/category/tech?page=2'
-```
-
-### Next.js Link Component'i ile Kullanım
-
-```tsx
-import Link from 'next/link';
-import { getLink } from '@avicennatechnology/next-centralized-link';
-
-function Navigation() {
-  return (
-    <nav>
-      <Link href={getLink('home')}>Ana Sayfa</Link>
-      <Link href={getLink('about')}>Hakkında</Link>
-      <Link href={getLink('user', { id: 123 })}>Kullanıcı Profili</Link>
-    </nav>
-  );
-}
-```
-
-### Router ile Kullanım
-
-```tsx
-import { useRouter } from 'next/router';
-import { getLink } from '@avicennatechnology/next-centralized-link';
-
-function MyComponent() {
-  const router = useRouter();
-  
-  const handleNavigation = () => {
-    router.push(getLink('user', { id: 456 }));
-  };
-  
-  return (
-    <button onClick={handleNavigation}>
-      Kullanıcı Profiline Git
-    </button>
-  );
-}
+const userUrl = links.user({ id: 123 }); // '/user/123'
+const postUrl = links.post({ slug: 'my-post' }); // '/blog/my-post'
+const categoryUrl = links.category({ category: 'tech', page: 2 }); // '/category/tech?page=2'
+const regionUrl = links.region('turkiye'); // '/vizeler/bolge/turkiye'
+const visaUrl = links.visa('abd-vizesi'); // '/vize/abd-vizesi'
 ```
 
 ## 🔧 API Referansı
+
+### `configureLinks(config)`
+
+Tüm route'ları tek seferde yapılandırır. **Önerilen yöntem**.
+
+**Parametreler:**
+- `config` (object): Route yapılandırma objesi
+
+**Örnek:**
+```typescript
+configureLinks({
+  home: () => '/',
+  visas: () => '/vizeler',
+  region: (slug) => `/vizeler/bolge/${slug}`,
+});
+```
+
+### `links` objesi
+
+Yapılandırılmış route'lara direkt erişim sağlar.
+
+**Örnek:**
+```typescript
+const url = links.region('avrupa'); // '/vizeler/bolge/avrupa'
+```
 
 ### `centralizedLink(key, linkFunction)`
 
@@ -144,40 +221,65 @@ const allLinks = getDefinedLinks(); // ['home', 'about', 'user', ...]
 
 ## 💡 Örnekler
 
+### Vize Sitesi Route'ları
+
+```typescript
+import { configureLinks, links } from '@avicennatechnology/next-centralized-link';
+
+// Route tanımları
+configureLinks({
+  home: () => '/',
+  visas: () => '/vizeler',
+  regions: () => '/vizeler/bolgeler',
+  region: (slug) => `/vizeler/bolge/${slug}`,
+  visa: (slug) => `/vize/${slug}`,
+  contact: () => '/iletisim',
+  about: () => '/hakkimizda',
+  services: () => '/hizmetler',
+  service: (slug) => `/hizmet/${slug}`,
+});
+
+// Kullanım örnekleri
+const visasUrl = links.visas(); // '/vizeler'
+const regionUrl = links.region('avrupa'); // '/vizeler/bolge/avrupa'
+const visaUrl = links.visa('schengen-vizesi'); // '/vize/schengen-vizesi'
+```
+
 ### E-ticaret Sitesi Route'ları
 
 ```typescript
-import { centralizedLink, getLink } from '@avicennatechnology/next-centralized-link';
-
-// Route tanımları
-centralizedLink('home', () => '/');
-centralizedLink('products', () => '/products');
-centralizedLink('product', ({ id }) => `/product/${id}`);
-centralizedLink('category', ({ slug }) => `/category/${slug}`);
-centralizedLink('cart', () => '/cart');
-centralizedLink('checkout', () => '/checkout');
-centralizedLink('user', ({ id }) => `/user/${id}`);
-centralizedLink('orders', ({ userId }) => `/user/${userId}/orders`);
+configureLinks({
+  home: () => '/',
+  products: () => '/products',
+  product: ({ id }) => `/product/${id}`,
+  category: ({ slug }) => `/category/${slug}`,
+  cart: () => '/cart',
+  checkout: () => '/checkout',
+  user: ({ id }) => `/user/${id}`,
+  orders: ({ userId }) => `/user/${userId}/orders`,
+});
 
 // Kullanım örnekleri
-const productUrl = getLink('product', { id: 'abc123' }); // '/product/abc123'
-const categoryUrl = getLink('category', { slug: 'electronics' }); // '/category/electronics'
-const ordersUrl = getLink('orders', { userId: 456 }); // '/user/456/orders'
+const productUrl = links.product({ id: 'abc123' }); // '/product/abc123'
+const categoryUrl = links.category({ slug: 'electronics' }); // '/category/electronics'
+const ordersUrl = links.orders({ userId: 456 }); // '/user/456/orders'
 ```
 
 ### Blog Route'ları
 
 ```typescript
-centralizedLink('blog', () => '/blog');
-centralizedLink('post', ({ slug }) => `/blog/${slug}`);
-centralizedLink('author', ({ username }) => `/author/${username}`);
-centralizedLink('tag', ({ tag }) => `/tag/${tag}`);
-centralizedLink('archive', ({ year, month }) => `/archive/${year}/${month}`);
+configureLinks({
+  blog: () => '/blog',
+  post: (slug) => `/blog/${slug}`,
+  author: (username) => `/author/${username}`,
+  tag: (tag) => `/tag/${tag}`,
+  archive: ({ year, month }) => `/archive/${year}/${month}`,
+});
 
 // Kullanım
-const postUrl = getLink('post', { slug: 'nextjs-tips' }); // '/blog/nextjs-tips'
-const authorUrl = getLink('author', { username: 'johndoe' }); // '/author/johndoe'
-const archiveUrl = getLink('archive', { year: 2023, month: 12 }); // '/archive/2023/12'
+const postUrl = links.post('nextjs-tips'); // '/blog/nextjs-tips'
+const authorUrl = links.author('johndoe'); // '/author/johndoe'
+const archiveUrl = links.archive({ year: 2023, month: 12 }); // '/archive/2023/12'
 ```
 
 ## 🛡️ TypeScript Desteği
@@ -198,7 +300,20 @@ centralizedLink('user', userRoute);
 - **Tip Güvenliği**: Full TypeScript desteği
 - **Kolay Refaktoring**: Route değişiklikleri tek yerden yapılır
 - **Hata Azaltma**: Yanlış URL yazma riskini minimuma indirir
-- **Next.js Uyumluluğu**: Hem App Router hem Pages Router ile uyumlu
+- **Direkt Kullanım**: `links.visas()` şeklinde direkt erişim
+- **Esnek Parametreler**: Hem obje hem de slug parametresi desteği
+
+## 🔄 Migrasyon
+
+Eğer mevcut `getLink` kullanımından geçiş yapıyorsanız:
+
+```typescript
+// Eski kullanım
+const url = getLink('region', 'avrupa');
+
+// Yeni kullanım
+const url = links.region('avrupa');
+```
 
 ## 📄 Lisans
 

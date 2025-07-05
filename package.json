@@ -1,6 +1,6 @@
 {
   "name": "@avicennatechnology/next-centralized-link",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Next.js için merkezileştirilmiş link yönetimi - route tanımlarını tek yerden yönetmek için kullanılır",
   "main": "dist/index.js",
   "module": "./dist/index.js",
@@ -29,15 +29,15 @@
     "typescript",
     "react"
   ],
-  "author": "",
+  "author": "Avicenna Technology",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/avicennatechnology/next-centralized-link.git"
   },
-  "homepage": "",
+  "homepage": "https://github.com/avicennatechnology/next-centralized-link#readme",
   "bugs": {
-    "url": ""
+    "url": "https://github.com/avicennatechnology/next-centralized-link/issues"
   },
   "peerDependencies": {
     "next": ">=12.0.0",
