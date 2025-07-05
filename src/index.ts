@@ -8,6 +8,30 @@ type RouteParams = Record<string, string | number | undefined>;
 type CentralizedLinkFunction = (params?: RouteParams | Slug) => string;
 type LinkConfig = Record<string, CentralizedLinkFunction>;
 
+
+class CentralizedLink {
+  links: Record<string, CentralizedLinkFunction> = {};
+  static centralizedLinkClass: CentralizedLink | null = null;
+  constructor() {
+    this.links = {};
+    CentralizedLink.centralizedLinkClass = this;
+  }
+  initialize(config: LinkConfig) {
+    this.links = config;
+  }
+  static getLinks() {
+    return CentralizedLink.centralizedLinkClass?.links || {};
+  }
+  
+  static getInstance() {
+    if (!CentralizedLink.centralizedLinkClass) {
+      CentralizedLink.centralizedLinkClass = new CentralizedLink();
+    }
+    return CentralizedLink.centralizedLinkClass;
+  }
+}
+
+
 // Links objesi - direkt fonksiyon çağrısı için
 const links: Record<string, CentralizedLinkFunction> = {};
 
@@ -124,7 +148,8 @@ export {
   getDefinedLinks, 
   hasLink, 
   configureLinks,
-  links 
+  links,
+  CentralizedLink,
 };
 
 export type { 

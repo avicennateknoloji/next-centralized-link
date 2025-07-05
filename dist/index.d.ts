@@ -6,6 +6,14 @@ type Slug = string | number;
 type RouteParams = Record<string, string | number | undefined>;
 type CentralizedLinkFunction = (params?: RouteParams | Slug) => string;
 type LinkConfig = Record<string, CentralizedLinkFunction>;
+declare class CentralizedLink {
+    links: Record<string, CentralizedLinkFunction>;
+    static centralizedLinkClass: CentralizedLink | null;
+    constructor();
+    initialize(config: LinkConfig): void;
+    static getLinks(): Record<string, CentralizedLinkFunction>;
+    static getInstance(): CentralizedLink;
+}
 declare const links: Record<string, CentralizedLinkFunction>;
 /**
  * Tüm linkleri toplu olarak yapılandırır
@@ -85,4 +93,4 @@ declare const getDefinedLinks: () => string[];
  */
 declare const hasLink: (key: string) => boolean;
 
-export { type CentralizedLinkFunction, type LinkConfig, type RouteParams, type Slug, centralizedLink, configureLinks, getDefinedLinks, getLink, hasLink, links };
+export { CentralizedLink, type CentralizedLinkFunction, type LinkConfig, type RouteParams, type Slug, centralizedLink, configureLinks, getDefinedLinks, getLink, hasLink, links };

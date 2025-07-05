@@ -1,6 +1,6 @@
 {
   "name": "@avicennatechnology/next-centralized-link",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "Next.js için merkezileştirilmiş link yönetimi - route tanımlarını tek yerden yönetmek için kullanılır",
   "main": "dist/index.js",
   "module": "./dist/index.js",
