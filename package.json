@@ -1,0 +1,52 @@
+{
+  "name": "@avicennatechnology/next-centralized-link",
+  "version": "0.0.1",
+  "description": "Next.js için merkezileştirilmiş link yönetimi - route tanımlarını tek yerden yönetmek için kullanılır",
+  "main": "dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "nextjs",
+    "next.js",
+    "links",
+    "routing",
+    "centralized",
+    "typescript",
+    "react"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "homepage": "",
+  "bugs": {
+    "url": ""
+  },
+  "peerDependencies": {
+    "next": ">=12.0.0",
+    "react": ">=17.0.0"
+  },
+  "devDependencies": {
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  }
+}

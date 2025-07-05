@@ -1,0 +1,2 @@
+var t={},r=(n,e)=>{t[n]=e},o=(n,e)=>{let i=t[n];if(!i)throw new Error(`Link "${n}" tan\u0131mlanmam\u0131\u015F. \xD6nce centralizedLink ile tan\u0131mlay\u0131n.`);return i(e)},s=()=>Object.keys(t),a=n=>n in t;export{r as centralizedLink,s as getDefinedLinks,o as getLink,a as hasLink,t as links};
+//# sourceMappingURL=index.js.map
